@@ -32,15 +32,15 @@ uint32_t fmhash(char *s, size_t len) {
 
     for (size_t i = 0; i < len; i++) {
         uint32_t c = (uint32_t) s[i];
-        uint32_t p7 = (uint32_t) i * 7;
 
         // distribute the character bits "randomly" over the 32 bits
         // add them to the hash
         hash += c * n1 + n2;
 
-        // rotate the hash by a stateful, the position of the character, multiple
-        // of 7 bits, inspired by the 7 bits of basic latin (ascii)
-        hash = rotr32(hash,p7 & 0x1f);
+        // rotate the hash by a stateful multiple of 7 bits, inspired by the 7 bits
+        // of basic latin (ascii). use the position as the base for the state
+        uint32_t i7 = (uint32_t) i * 7;
+        hash = rotr32(hash,i7 & 0x1f);
 
         // invert the hash bits by a "randomly", the character, rotated constant 
         hash ^= rotr32(n3,c & 0x1f);
@@ -54,16 +54,17 @@ uint32_t fmhash_lc(char *s, size_t len) {
 
     for (size_t i = 0; i < len; i++) {
         uint32_t c = (uint32_t) s[i];
+
         c = ascii_tolower(c);
-        uint32_t p7 = (uint32_t) i * 7;
 
         // distribute the character bits "randomly" over the 32 bits
         // add them to the hash
         hash += c * n1 + n2;
 
-        // rotate the hash by a stateful, the position of the character, multiple
-        // of 7 bits, inspired by the 7 bits of basic latin (ascii)
-        hash = rotr32(hash,p7 & 0x1f);
+        // rotate the hash by a stateful multiple of 7 bits, inspired by the 7 bits
+        // of basic latin (ascii). use the position as the base for the state
+        uint32_t i7 = (uint32_t) i * 7;
+        hash = rotr32(hash,i7 & 0x1f);
 
         // invert the hash bits by a "randomly", the character, rotated constant 
         hash ^= rotr32(n3,c & 0x1f);
