@@ -12,6 +12,12 @@ uint32_t rotr32(uint32_t x,uint32_t r) {
     return (x >> r) | (x << (32 - r));
 }
 
+static inline
+uint32_t ascii_tolower(uint32_t c) {
+    if (c >= 0x41 && c <= 0x5a) c |= 0x20;  // convert ASCII A-Z to a-z
+    return c;
+}
+
 // random numbers with no more than 3 consecutive equal bits, even if rotated
 //                           3 2         1         0
 //                           10987654321098765432109876543210
@@ -48,7 +54,7 @@ uint32_t fmhash_lc(char *s, size_t len) {
 
     for (size_t i = 0; i < len; i++) {
         uint32_t c = (uint32_t) s[i];
-        if (c >= 0x41 && c <= 0x5a) c |= 0x20;  // convert ASCII A-Z to a-z
+        c = ascii_tolower(c);
         uint32_t p7 = (uint32_t) i * 7;
 
         // distribute the character bits "randomly" over the 32 bits
